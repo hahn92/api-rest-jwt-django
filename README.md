@@ -9,3 +9,12 @@ Administrador de tareas simple:
 - El listado de tareas es paginado
 - Busquedas por descripción
 - test unitarios
+
+
+Ejecuta con docker-compose:
+
+Ejecutar:
+-  docker-compose up -d
+
+Detener:
+-  docker-compose down

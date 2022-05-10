@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  db:
+    # Platform para MAC M1
+    platform: linux/x86_64
+    image: "postgres:14.2"
+    restart: always
+    # Volumen para persistencia de datos
+    volumes:
+      - "./postgresql:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: "task_manager"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    # Verifica el estado de la base de datos
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 30s
+      retries: 3
+    ports:
+      - '5432:5432'
+
+  web:
+    # Django
+    build: .
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./ManagerTasks/:/usr/src/app
+    ports:
+      - "8000:8000"
+    environment:
+      # General
+      DEBUG: "True"
+      MEDIA: "False"
+      DATABASE: "True"
+      # DATABASE
+      DATABASE_HOST: "db"
+      DATABASE_NAME: "task_manager"
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "root"
+      # Lenguaje
+      LANG: "es_CO.UTF-8" 
+      LANGUAGE: "es_CO.UTF-8" 
+      LC_ALL: "es_CO.UTF-8"
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  admindb:
+    # Administrador de base de datos
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - 8080:8080
+    links:
+      - db
+    

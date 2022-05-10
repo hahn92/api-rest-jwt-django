@@ -148,3 +148,6 @@ pip-selfcheck.json
 
 # Visual Basic Code
 .vscode
+
+# postgresql
+postgresql/
