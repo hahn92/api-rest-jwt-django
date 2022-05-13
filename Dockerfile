@@ -1,9 +1,18 @@
+# For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.9
+
+EXPOSE 8000
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /usr/src/app
 
 # Agrega codigo de python
-ADD ManagerTasks .
+ADD ManagerTasks/ .
 
 #Instala dependencias del sistema operativo
 # POSTGIS Development Libraries
@@ -28,10 +37,21 @@ RUN pip install psycopg2-binary --no-binary psycopg2-binary
 RUN pip3 install -r requirements.txt
 
 # Actualizar base de datos
-RUN python manage.py makemigrations
+#RUN python manage.py makemigrations
 
-RUN python manage.py migrate
+#RUN python manage.py migrate
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
+#RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+#USER appuser
+
 
 # --insecure cuando no se han configurado el servidor de archivos estaticos
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ] 
-#CMD [ "gunicorn", "tusalvavidas.wsgi", "--bind", "0.0.0.0:8000" ]
+#CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ] 
+
+# Producction mode
+#CMD [ "gunicorn", "ManagerTasks.wsgi", "--bind", "0.0.0.0:8000" ]
+
+# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi"]

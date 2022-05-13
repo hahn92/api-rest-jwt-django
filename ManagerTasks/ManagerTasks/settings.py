@@ -37,10 +37,10 @@ else:
     DATABASE = False
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ.get("DEBUG") == "True":
-    DEBUG = True
-else:
+if os.environ.get("DEBUG") == "False":
     DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 

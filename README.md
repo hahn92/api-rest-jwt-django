@@ -18,3 +18,66 @@ Ejecutar:
 
 Detener:
 -  docker-compose down
+
+
+-----------
+
+- Se incluyen las colexiones de Postman para consumo de los APIs
+
+---------- Ajustes para debug en .vscode
+
+.vscode/launch.json
+{
+    "configurations": [
+        {
+            "name": "Docker: Python - Django",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "django"
+            }
+        }
+    ]
+}
+
+
+.vscode/tasks.json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "python",
+            "dockerBuild": {
+                "tag": "dockerdebuggingdjango:latest",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build"
+            ],
+            "python": {
+                "args": [
+                    "runserver",
+                    "0.0.0.0:8000",
+                    "--nothreading",
+                    "--noreload"
+                ],
+                "file": "./manage.py"
+            }
+        }
+    ]
+}
