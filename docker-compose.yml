@@ -22,7 +22,7 @@ services:
       timeout: 30s
       retries: 3
     ports:
-      - '5432:5432'
+      - 5432:5432
 
   web:
     # Django
@@ -32,21 +32,9 @@ services:
     volumes:
       - ./ManagerTasks/:/usr/src/app
     ports:
-      - "8000:8000"
-    environment:
-      # General
-      DEBUG: "True"
-      MEDIA: "False"
-      DATABASE: "True"
-      # DATABASE
-      DATABASE_HOST: "db"
-      DATABASE_NAME: "task_manager"
-      DATABASE_USER: "postgres"
-      DATABASE_PASSWORD: "root"
-      # Lenguaje
-      LANG: "es_CO.UTF-8" 
-      LANGUAGE: "es_CO.UTF-8" 
-      LC_ALL: "es_CO.UTF-8"
+      - 8000:8000
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
